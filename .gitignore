@@ -1,1 +1,5 @@
 .idea/
+app-node/ts/typings/
+app-node/node_modules/
+app-node/docs/
+app-node/coverage/

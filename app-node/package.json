@@ -1,0 +1,24 @@
+{
+  "name": "app-node",
+  "version": "1.0.0",
+  "description": "app-node for ht-docker-traffic",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node ./dist/index.js",
+    "test": "(npmts)"
+  },
+  "author": "Lossless GmbH",
+  "license": "ISC",
+  "dependencies": {
+    "beautylog": "*",
+    "fs-extra": "^0.26.7",
+    "q": "^1.4.1",
+    "request": "^2.70.0",
+    "rx": "^4.1.0",
+    "shelljs": "^0.6.0",
+    "smartfile": "^3.0.4"
+  },
+  "devDependencies": {
+    "npmts": "^5.0.4"
+  }
+}

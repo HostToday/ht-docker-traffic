@@ -1,0 +1,25 @@
+nginx1 :
+  image: "nginx"
+  environment:
+      VIRTUAL_HOST: "test2.lossless.directory"
+  restart: always
+  container_name: nginx1
+nginx2:
+  image: nginx
+  environment:
+    VIRTUAL_HOST: "test1.lossless.directory"
+  restart: always
+  container_name: nginx2
+traffic:
+  image: "trafficimg"
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+  environment:
+      SSLSYNC: "true"
+      CLOUDFLARE: "true"
+      DEBUG: "false"
+  restart: always
+  container_name: traffic

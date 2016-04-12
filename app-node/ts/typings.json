@@ -1,0 +1,10 @@
+{
+  "version": false,
+  "dependencies": {},
+  "ambientDependencies": {
+    "colors": "registry:dt/colors",
+    "mocha": "registry:dt/mocha",
+    "node": "registry:dt/node",
+    "should": "registry:dt/should"
+  }
+}
