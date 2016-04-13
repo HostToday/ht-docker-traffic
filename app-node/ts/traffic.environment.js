@@ -5,34 +5,58 @@ exports.checkDebug = function () {
     var done = plugins.q.defer();
     if (process.env.DEBUG === "true") {
         plugins.beautylog.log("Showing Debug Messages, because ENV: DEBUG === 'true'");
-    }
-    ;
-    done.resolve();
-    return done.promise;
-};
-exports.checkSsl = function () {
-    var done = plugins.q.defer();
-    plugins.beautylog.log("now checking for SSLSYNC");
-    if (process.env.SSLSYNC === "true") {
-        plugins.beautylog.log("Allright, SSLSYNC is true");
+        done.resolve(true);
     }
     else {
-        plugins.beautylog.log("Allright, SSLSYNC is false");
+        done.resolve(false);
     }
     ;
-    done.resolve();
     return done.promise;
 };
-exports.checkCloudflare = function () {
-    var done = plugins.q.defer();
-    if (process.env.CLOUDFLARE === "true") {
-        plugins.beautylog.log("Allright, CLOUDFLARE is true");
+exports.checkCertOriginSync = function () {
+    var sslUpdate;
+    if (process.env.CERT_ORIGIN) {
+        plugins.beautylog.log("Allright, CERT_UPDATE is set");
+        sslUpdate = true;
     }
     else {
-        plugins.beautylog.log("Allright, CLOUDFLARE is false");
+        plugins.beautylog.warn("CERT_UPDATE is not set! You are not in a Cluster?");
+        sslUpdate = false;
     }
     ;
-    done.resolve();
-    return done.promise;
+    return sslUpdate;
+};
+exports.checkCertLeSync = function () {
+    var sslLe;
+    if (process.env.CERT_LE) {
+        plugins.beautylog.log("Allright, CERT_LE is set");
+        sslLe = true;
+    }
+    else {
+        plugins.beautylog.warn("CERT_LE is not set! You are not in a Cluster?");
+        sslLe = false;
+    }
+    ;
+    return sslLe;
+};
+exports.checkCfUpdateSync = function () {
+    var cfSync;
+    if (process.env.CF_UPDATE === "true") {
+        plugins.beautylog.log("Allright, CF_UPDATE is true. Now checking for credentials.");
+        if (process.env.CF_EMAIL && process.env.CF_KEY) {
+            plugins.beautylog.log("Found Cloudflare Credentials");
+            cfSync = true;
+        }
+        else {
+            plugins.beautylog.error("Bummer! Cloudflare Credentials are missing!");
+            cfSync = false;
+        }
+    }
+    else {
+        plugins.beautylog.warn("CF_UPDATE is false! You are not in a Cluster?");
+        cfSync = false;
+    }
+    ;
+    return cfSync;
 };
 //# sourceMappingURL=traffic.environment.js.map

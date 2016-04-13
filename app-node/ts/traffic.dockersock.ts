@@ -18,6 +18,7 @@ let tickerObs = plugins.rx.Observable
 export let tickerSub;
 export let noTicker = false;
 export let startTicker = function(){
+    let done = plugins.q.defer();
     tickerSub = tickerObs.subscribe(
         function (x) {
             console.log('Next: ' + x);
@@ -31,7 +32,7 @@ export let startTicker = function(){
     );
     console.log("subscribed ticker");
     if (noTicker) tickerSub.dispose();
-    return tickerSub;
+    return done.promise;
 };
 
 

@@ -17,9 +17,6 @@ traffic:
     - "443:443"
   volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
-  environment:
-      SSLSYNC: "true"
-      CLOUDFLARE: "true"
-      DEBUG: "false"
+  env_file: "nogit/nogit.env"
   restart: always
   container_name: traffic

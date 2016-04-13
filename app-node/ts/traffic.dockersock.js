@@ -15,6 +15,7 @@ var tickerObs = plugins.rx.Observable
     .interval(5000).repeat();
 exports.noTicker = false;
 exports.startTicker = function () {
+    var done = plugins.q.defer();
     exports.tickerSub = tickerObs.subscribe(function (x) {
         console.log('Next: ' + x);
     }, function (err) {
@@ -25,7 +26,7 @@ exports.startTicker = function () {
     console.log("subscribed ticker");
     if (exports.noTicker)
         exports.tickerSub.dispose();
-    return exports.tickerSub;
+    return done.promise;
 };
 exports.getChange = function () {
 };
