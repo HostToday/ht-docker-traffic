@@ -1,44 +1,32 @@
 /// <reference path="./typings/main.d.ts" />
 import plugins = require("./traffic.plugins");
+import TrafficEnvironment = require("./traffic.environment");
 
-export let get = function(){
+export let getContainerData = function(){
     var done = plugins.q.defer();
-    plugins.request.get('http://unix:/var/run/docker.sock:/containers/json')
+    plugins.request.get("http://unix:/var/run/docker.sock:/containers/json")
         .on("data",function(data){
             let dataString = data.toString("utf8");
             let dataObject = JSON.parse(dataString);
-            done.resolve(dataObject);
+            let detailedDataObject = [];
+            let recursiveCounter = 0;
+            let makeDetailed = function(){
+                if(typeof dataObject[recursiveCounter] != "undefined"){
+                    plugins.request.get("http://unix:/var/run/docker.sock:/containers/"
+                            + dataObject[recursiveCounter].Id
+                            +"/json")
+                        .on("data",function(){
+                            recursiveCounter++;
+                            let dataString = data.toString("utf8");
+                            let dataObject = JSON.parse(dataString);
+                            detailedDataObject.push(dataObject);
+                            makeDetailed();
+                        });
+                } else {
+                    done.resolve(detailedDataObject);
+                }
+            };
+            makeDetailed();
         });
     return done.promise;
 };
-
-let tickerObs = plugins.rx.Observable
-    .interval(5000).repeat();
-
-export let tickerSub;
-export let noTicker = false;
-export let startTicker = function(){
-    let done = plugins.q.defer();
-    tickerSub = tickerObs.subscribe(
-        function (x) {
-            console.log('Next: ' + x);
-        },
-        function (err) {
-            console.log('Error: ' + err);
-        },
-        function () {
-            console.log('Completed');
-        }
-    );
-    console.log("subscribed ticker");
-    if (noTicker) tickerSub.dispose();
-    return done.promise;
-};
-
-
-export let getChange = function(){
-
-};
-export let containerChange = plugins.rx.Observable.create(function(observer){
-    
-});

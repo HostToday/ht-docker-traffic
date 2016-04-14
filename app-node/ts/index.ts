@@ -2,18 +2,22 @@
 console.log("**** Starting ht-docker-traffic ****");
 import plugins = require("./traffic.plugins");
 import paths = require("./traffic.paths");
-import TrafficEnvironment = require("./traffic.environment");
-import TrafficOptions = require("./traffic.options");
-import TrafficDockersock = require("./traffic.dockersock");
-import TrafficNginx = require("./traffic.nginx");
+
 import TrafficCerts = require("./traffic.certs");
+import TrafficDockersock = require("./traffic.dockersock");
+import TrafficEnvironment = require("./traffic.environment");
+import TrafficEvents = require("./traffic.events");
+import TrafficGit = require("./traffic.git");
+import TrafficOptions = require("./traffic.options");
+
+import TrafficNginx = require("./traffic.nginx");
 plugins.beautylog.log("Traffic container is started!");
 TrafficEnvironment.checkDebug()
     .then(TrafficOptions.buildOptions)
     .then(TrafficCerts.setupCerts)
-    .then(TrafficDockersock.startTicker);
+    .then(TrafficEvents.startTicker);
 
 //prevent Ticker from executing indefinitely for tests
 export let noTicker = function(){
-    TrafficDockersock.noTicker = true;
+    TrafficEvents.noTicker = true;
 };

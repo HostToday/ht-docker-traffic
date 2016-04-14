@@ -64,7 +64,7 @@ export let pullCertsFromOriginSync = function(){
 export let pushCertsToOriginSync = function(){
     plugins.beautylog.log("now syncing certs back to source ");
     plugins.shelljs.exec(
-        "cd " + paths.certDir + " && git add -A && git commit 'UPDATE CERTS' && git push origin master"
+        "cd " + paths.certDir + " && git add -A && git commit -m 'UPDATE CERTS' && git push origin master"
     );
 };
 
@@ -79,7 +79,7 @@ export let checkCertificate = function(){
 
 export let getNeededCerts = function(){
     let done = plugins.q.defer();
-    
+
     done.resolve();
     return done.promise;
 };

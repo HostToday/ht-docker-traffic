@@ -5,8 +5,7 @@ import plugins = require("./traffic.plugins");
  ************ DATA STORAGE ************************************
  **************************************************************/
 
-export let runningContainersBefore = []; // containers at the last check cycle
-export let runningContainersNow = []; // containers at current check cycle
+export let relevantContainersBefore = []; // containers at the last check cycle
 export let relevantContainers = []; // all certs that are currently missing
 
 /**************************************************************
@@ -75,7 +74,13 @@ export let checkCfUpdateSync = function(){
 /**************************************************************
  ************ Routines - RUN DURING CONTAINER LIFETIME ********
  **************************************************************/
+let containerChangeNotify;
 
-export let detectContainerChange = function(){
-    
+export let containerChange = plugins.rx.Observable.create(function(observer){
+
+});
+
+export let detectContainerChange = function(containerDataArg){
+    console.log("checking for container change");
+    console.log(containerDataArg);
 };
