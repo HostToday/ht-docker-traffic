@@ -8,7 +8,7 @@
     "test": "(npmts)"
   },
   "author": "Lossless GmbH",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "beautylog": "*",
     "fs-extra": "^0.26.7",

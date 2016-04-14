@@ -1,29 +1,31 @@
-FROM debian
-RUN apt-get update \
+FROM ubuntu
+RUN DEBIAN_FRONTEND=noninteractive
+RUN apt-get -y install software-properties-common \
+    && apt-get update \
     && apt-get upgrade --no-install-recommends -y \
     && apt-get install --no-install-recommends -y \
             build-essential \
             ca-certificates \
             curl \
             git \
-            python \
+            python3 \
             rsync \
+            ssh \
             nginx \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/*
 
 # Install pip
 RUN curl -O https://bootstrap.pypa.io/get-pip.py \
-    && python get-pip.py \
-    && rm get-pip.py
+    && python3 get-pip.py \
+    && rm get-pip.py \
+    && ln -s /usr/bin/python3 /usr/bin/python
 
-RUN mkdir /app-ssl
 WORKDIR /app-ssl
-RUN git clone https://github.com/lukas2511/letsencrypt.sh \
-    && cd letsencrypt.sh \
-    && mkdir hooks \
-    && git clone https://github.com/kappataumu/letsencrypt-cloudflare-hook hooks/cloudflare \
-    && pip install -r hooks/cloudflare/requirements.txt
+RUN git clone https://github.com/lukas2511/letsencrypt.sh . \
+    && mkdir ./hooks \
+    && git clone https://github.com/kappataumu/letsencrypt-cloudflare-hook ./hooks/cloudflare \
+    && pip install -r ./hooks/cloudflare/requirements.txt
 
 
 ENV NVM_DIR /usr/local/nvm
@@ -42,4 +44,7 @@ COPY ./app-node/dist /app-node/dist
 
 WORKDIR /app-node
 RUN npm install --production
+
+COPY ./configssh /root/.ssh/config
+
 CMD ["npm","start"]
