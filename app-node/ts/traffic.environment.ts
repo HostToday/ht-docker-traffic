@@ -80,7 +80,14 @@ export let containerChange = plugins.rx.Observable.create(function(observer){
 
 });
 
-export let detectContainerChange = function(containerDataArg){
+export let detectContainerChange = function(containerDataArg:any[]){
     console.log("checking for container change");
-    console.log(containerDataArg);
+    let filteredData = containerDataArg.map(function(containerObjectArg){
+        return {
+            "Id":containerObjectArg.Id,
+            "Created":containerObjectArg.Created
+        };
+    });
+    console.log(filteredData);
+    
 };

@@ -13,7 +13,7 @@ export let startTicker = function(){
     tickerSub = tickerObs.subscribe(
         function (x) {
             console.log('TickerCycle#: ' + x);
-            TrafficDockersock.getContainerData()
+            TrafficDockersock.getContainerData("overview")
                 .then(function(containerDataArg){
                     TrafficEnvironment.detectContainerChange(containerDataArg);
                 });
