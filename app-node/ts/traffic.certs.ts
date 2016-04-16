@@ -16,7 +16,7 @@ export let missingCerts = []; //all certs that are currently missing
  ************ SETUPS - RUN ON FIRST START *********************
  **************************************************************/
 
-export let setupCertsFromOriginSync = function(){
+let setupCertsFromOriginSync = function(){
     TrafficSsh.setupSshFromEnvSync(); //setting up SSH in case SSH is specified;
     plugins.beautylog.log("now getting certificates from certificate origin");
     plugins.shelljs.exec(
@@ -25,29 +25,12 @@ export let setupCertsFromOriginSync = function(){
     pullCertsFromOriginSync();
 };
 
-export let setupCertsFromLe = function(){
-    let done = plugins.q.defer();
-    getNeededCerts()
-        .then(getAvailableCerts)
-        .then(getMissingCerts)
-        .then(done.resolve);
-    return done.promise;
-};
-
 export let setupCerts = function(){
     let done = plugins.q.defer();
-    if(TrafficOptions.certOrigin || TrafficOptions.certLe){
+    if(TrafficOptions.certOrigin){
         plugins.fs.ensureDirSync(paths.certDir);
         if(TrafficOptions.certOrigin) setupCertsFromOriginSync();
-        if(TrafficOptions.certLe) {
-            setupCertsFromLe()
-                .then(function(){
-                    if(TrafficOptions.certOrigin) pushCertsToOriginSync();
-                    done.resolve();
-                });
-        } else {
-            done.resolve();
-        };
+        done.resolve();
     } else {
         done.resolve();
     }
@@ -57,46 +40,79 @@ export let setupCerts = function(){
 /**************************************************************
  ************ Routines - RUN DURING CONTAINER LIFETIME ********
  **************************************************************/
-export let pullCertsFromOriginSync = function(){
+let pullCertsFromOriginSync = function(){
     plugins.shelljs.exec("cd " + paths.certDir + " && git pull origin master");
 };
 
-export let pushCertsToOriginSync = function(){
+let pushCertsToOriginSync = function(){
     plugins.beautylog.log("now syncing certs back to source ");
     plugins.shelljs.exec(
         "cd " + paths.certDir + " && git add -A && git commit -m 'UPDATE CERTS' && git push origin master"
     );
 };
 
-export let getLeCertSync = function(domainArg:string){
+let getLeCertSync = function(domainStringArg:string){
     plugins.beautylog.log("now getting certs from Lets Encrypt");
-    plugins.shelljs.exec("cd /app-ssl/ && ./letsencrypt.sh -c -d " + domainArg + " -t dns-01 -k './hooks/cloudflare/hook.py'");
+    let resultPath = plugins.path.join(paths.appSslDir,"certs/",domainStringArg);
+    plugins.shelljs.exec("cd /app-ssl/ && ./letsencrypt.sh -c -d " + domainStringArg + " -t dns-01 -k './hooks/cloudflare/hook.py'");
+    plugins.shelljs.cp("-r",resultPath,paths.certDir);
+    plugins.shelljs.rm('-rf', resultPath);
 };
 
-export let checkCertificate = function(){
+let checkCertificate = function(){
     
 };
 
-export let getNeededCerts = function(){
-    let done = plugins.q.defer();
+/**************************************************************
+ ************ Main exports ************************************
+ **************************************************************/
 
-    done.resolve();
+export let getCerts = function(receivingContainersArrayArg:any[]){
+    let done = plugins.q.defer();
+    getNeededCerts(receivingContainersArrayArg)
+        .then(getAvailableCerts)
+        .then(getMissingCerts)
+        .then(done.resolve);
     return done.promise;
 };
 
-export let getAvailableCerts = function(){
+
+let getNeededCerts = function(receivingContainersArrayArg:any[]){
+    let done = plugins.q.defer();
+    let neededCertsLocal = [];
+    for(let containerKey in receivingContainersArrayArg){
+        neededCertsLocal.push(receivingContainersArrayArg[containerKey].domain);
+    }
+    neededCerts = neededCertsLocal;
+    plugins.beautylog.log("We need the following certificates:");
+    console.log(neededCertsLocal);
+    done.resolve(neededCertsLocal);
+    return done.promise;
+};
+
+let getAvailableCerts = function(neededCertsArg:string[]){
     let done = plugins.q.defer();
     plugins.smartfile.get.folders(paths.certDir)
         .then(function(foldersArrayArg){
-            neededCerts = foldersArrayArg;
-            done.resolve(neededCerts);
+            availableCerts = foldersArrayArg.filter(function(folderString:string){
+                return folderString != ".git" //make sure that the .git directory is not listed as domain
+            });
+            plugins.beautylog.log("The following certs are available:");
+            console.log(availableCerts);
+            missingCerts = plugins.lodash.difference(neededCertsArg,availableCerts);
+            plugins.beautylog.log("The following certs missing:");
+            console.log(missingCerts);
+            done.resolve(missingCerts);
         });
     
     return done.promise;
 };
 
-export let getMissingCerts = function(){
+let getMissingCerts = function(missingCertsArg:string[]){
     let done = plugins.q.defer();
+    for(let domainStringKey in missingCertsArg){
+        getLeCertSync(missingCertsArg[domainStringKey]);
+    };
     done.resolve();
     return done.promise;
 };

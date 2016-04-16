@@ -1,13 +1,13 @@
 nginx1 :
   image: "nginx"
   environment:
-      VIRTUAL_HOST: "test2.lossless.directory"
+      VIRTUAL_HOST: "test3.lossless.zone"
   restart: always
   container_name: nginx1
 nginx2:
   image: nginx
   environment:
-    VIRTUAL_HOST: "test1.lossless.directory"
+    VIRTUAL_HOST: "test4.lossless.zone"
   restart: always
   container_name: nginx2
 traffic:

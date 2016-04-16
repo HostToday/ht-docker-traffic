@@ -9,11 +9,11 @@ export let getContainerData = function(typeArg:string){
             let dataString = data.toString("utf8");
             let dataObject = JSON.parse(dataString);
             let detailedDataObject = [];
-            let recursiveCounter = 0;
 
             //switch types
             switch (typeArg){
                 case "detailed":
+                    let recursiveCounter = 0;
                     let makeDetailed = function(){
                         if(typeof dataObject[recursiveCounter] != "undefined"){
                             plugins.request.get("http://unix:/var/run/docker.sock:/containers/"

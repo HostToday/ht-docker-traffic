@@ -1,5 +1,8 @@
 /// <reference path="./typings/main.d.ts" />
 import plugins = require("./traffic.plugins");
+import TrafficEvents = require("./traffic.events");
+import TrafficDockersock = require("./traffic.dockersock");
+import TrafficCerts = require("./traffic.certs");
 
 /**************************************************************
  ************ DATA STORAGE ************************************
@@ -7,6 +10,7 @@ import plugins = require("./traffic.plugins");
 
 export let relevantContainersBefore = []; // containers at the last check cycle
 export let relevantContainers = []; // all certs that are currently missing
+export let receivingContainers = []; // containers that receive traffic
 
 /**************************************************************
  ************ SETUPS - RUN ON FIRST START *********************
@@ -76,18 +80,50 @@ export let checkCfUpdateSync = function(){
  **************************************************************/
 let containerChangeNotify;
 
-export let containerChange = plugins.rx.Observable.create(function(observer){
+export let handleContainerChange = function(){
+    let done = plugins.q.defer();
+    TrafficDockersock.getContainerData("detailed")
+        .then(function(containerDataArg:any[]){
+            let detailedContainerData = containerDataArg
+                .map(function(containerObject){
+                    return {
+                        "containerId":containerObject.Id,
+                        "domain":plugins.smartstring.docker.makeEnvObject(containerObject.Config.Env).VIRTUAL_HOST
+                    }
+                });
+            let receivingContainersLocal = detailedContainerData.filter(function(containerObjectArg){
+                return containerObjectArg.domain ? true : false;
+            });
+            receivingContainers = receivingContainersLocal;
+            console.log(detailedContainerData);
+            TrafficCerts.getCerts(receivingContainersLocal)
+                .then(done.resolve);
+        });
+    return done.promise;
+};
 
-});
-
-export let detectContainerChange = function(containerDataArg:any[]){
+export let detectContainerChange = function(){
     console.log("checking for container change");
-    let filteredData = containerDataArg.map(function(containerObjectArg){
-        return {
-            "Id":containerObjectArg.Id,
-            "Created":containerObjectArg.Created
-        };
-    });
-    console.log(filteredData);
-    
+    TrafficDockersock.getContainerData("overview")
+        .then(function(containerDataArg:any[]){
+            relevantContainers = containerDataArg.map(function(containerObjectArg){
+                return {
+                    "Id":containerObjectArg.Id,
+                    "Created":containerObjectArg.Created
+                };
+            });
+            if(plugins.lodash.isEqual(relevantContainers,relevantContainersBefore)){
+                relevantContainersBefore = relevantContainers;
+                console.log("no change");
+            } else {
+                console.log("change detected");
+                TrafficEvents.stopTicker();
+                handleContainerChange()
+                    .then(function(){
+                        relevantContainersBefore = relevantContainers;
+                        TrafficEvents.startTicker();
+                    });
+
+            };
+        });
 };

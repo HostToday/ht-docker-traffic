@@ -11,12 +11,14 @@
   "license": "MIT",
   "dependencies": {
     "beautylog": "*",
-    "fs-extra": "^0.26.7",
+    "fs-extra": "^0.27.0",
+    "lodash": "^4.11.1",
     "q": "^1.4.1",
-    "request": "^2.70.0",
+    "request": "^2.71.0",
     "rx": "^4.1.0",
     "shelljs": "^0.6.0",
-    "smartfile": "^3.0.4"
+    "smartfile": "^3.0.5",
+    "smartstring": "1.0.0"
   },
   "devDependencies": {
     "npmts": "^5.0.4"

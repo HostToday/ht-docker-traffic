@@ -4,10 +4,17 @@ import TrafficOptions = require("./traffic.options");
 
 
 
-export let deleteOldConfig = function(){
+let deleteOldConfig = function(){
     
 };
 
-export let createNewConfig = function(){
+let createNewConfig = function(){
     
 };
+
+export let getNginxConfig = function(){
+    let done = plugins.q.defer();
+    plugins.beautylog.log("now creating nginx config");
+    done.resolve();
+    return done.promise;
+}
