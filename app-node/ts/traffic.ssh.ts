@@ -1,8 +1,10 @@
 /// <reference path="./typings/main.d.ts" />
 import plugins = require("./traffic.plugins");
+import TrafficOptions = require("./traffic.options");
 
-export let setupSshFromEnvSync = function(){
-    if(process.env.CERT_ORIGIN_SSH){
+export let setupSshFromEnv = function(){
+    let done = plugins.q.defer();
+    if(TrafficOptions.sshKey){
         plugins.beautylog.ok("found SSH Key for CERT_ORIGIN. Setting it up now...");
         plugins.fs.ensureDirSync("/root/.ssh");
         plugins.shelljs.exec("echo $CERT_ORIGIN_SSH > /root/.ssh/id_rsa64");
@@ -11,4 +13,6 @@ export let setupSshFromEnvSync = function(){
     } else {
         plugins.beautylog.warn("Did not find SSH Key for CERT_ORIGIN.");
     }
+    done.resolve();
+    return done.promise;
 };

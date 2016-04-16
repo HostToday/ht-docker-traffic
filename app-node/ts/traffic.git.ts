@@ -6,7 +6,10 @@ import TrafficSsh = require("./traffic.ssh");
 
 export let setupGit = function(){
     let done = plugins.q.defer();
+    plugins.beautylog.log("now setting up git...");
+    plugins.shelljs.exec("git config --global user.email bot@lossless.com");
+    plugins.shelljs.exec("git config --global user.name LosslessBot");
+    plugins.beautylog.success("git is ready!")
     done.resolve();
+    return done.promise;
 };
-plugins.shelljs.exec("git config --global user.email 'bot@lossless.com'");
-plugins.shelljs.exec("git config --global user.name 'Lossless Bot'");

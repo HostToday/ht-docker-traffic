@@ -3,6 +3,7 @@ import plugins = require("./traffic.plugins");
 import TrafficEvents = require("./traffic.events");
 import TrafficDockersock = require("./traffic.dockersock");
 import TrafficCerts = require("./traffic.certs");
+import TrafficNginx = require("./traffic.nginx");
 
 /**************************************************************
  ************ DATA STORAGE ************************************
@@ -31,28 +32,32 @@ export let checkDebug = function(){
     return done.promise;
 };
 
+export let checkSshKeySync = function(){
+    if(process.env.CERT_ORIGIN_SSH){
+        return true
+    } else {
+        return false;
+    }
+};
+
 export let checkCertOriginSync = function(){
-    let sslUpdate:boolean;
     if(process.env.CERT_ORIGIN){
         plugins.beautylog.ok("Allright, CERT_UPDATE is set");
-        sslUpdate = true;
+        return true;
     } else {
         plugins.beautylog.warn("CERT_UPDATE is not set! You are not in a Cluster?");
-        sslUpdate = false;
+        return false;
     };
-    return sslUpdate;
 };
 
 export let checkCertLeSync = function(){
-    let sslLe:boolean;
     if(process.env.CERT_LE){
         plugins.beautylog.ok("Allright, CERT_LE is set");
-        sslLe = true;
+        return true;
     } else {
         plugins.beautylog.warn("CERT_LE is not set! You are not in a Cluster?");
-        sslLe = false;
+        return false;
     };
-    return sslLe;
 };
 
 
@@ -97,6 +102,7 @@ export let handleContainerChange = function(){
             receivingContainers = receivingContainersLocal;
             console.log(detailedContainerData);
             TrafficCerts.getCerts(receivingContainersLocal)
+                .then(TrafficNginx.getNginxConfig)
                 .then(done.resolve);
         });
     return done.promise;
