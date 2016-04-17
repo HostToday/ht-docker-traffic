@@ -1,7 +1,9 @@
 /// <reference path="./typings/main.d.ts" />
 export let beautylog = require("beautylog");
 export let fs = require("fs-extra");
+export let gulp = require("gulp");
 export let lodash = require("lodash");
+export let moment = require("moment");
 export let path = require("path");
 export let q = require("q");
 export let request = require("request");
@@ -9,3 +11,4 @@ export let rx = require("rx");
 export let shelljs = require("shelljs");
 export let smartfile = require("smartfile");
 export let smartstring = require("smartstring");
+export let through2 = require("through2");

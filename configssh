@@ -1,14 +1,14 @@
 Host gitlab.com
-    HostName git.resin.io
-    IdentityFile ~/.ssh/id_rsa
+    HostName gitlab.com
+    IdentityFile /root/.ssh/id_rsa
     StrictHostKeyChecking no
 
 Host github.com
-    HostName git.resin.io
-    IdentityFile ~/.ssh/id_rsa
+    HostName github.com
+    IdentityFile /root/.ssh/id_rsa
     StrictHostKeyChecking no
 
 Host bitbucket.org
-    HostName git.resin.io
-    IdentityFile ~/.ssh/id_rsa
+    HostName bitbucket.org
+    IdentityFile /root/.ssh/id_rsa
     StrictHostKeyChecking no

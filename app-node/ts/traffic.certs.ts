@@ -58,6 +58,7 @@ export let getCerts = function(receivingContainersArrayArg:any[]){
     let done = plugins.q.defer();
     getNeededCerts(receivingContainersArrayArg)
         .then(getCertsFromOrigin)
+        .then(removeOldCerts)
         .then(getAvailableCerts)
         .then(getMissingCerts)
         .then(pushCertsToOrigin)
@@ -85,6 +86,31 @@ let getCertsFromOrigin = function(neededCertsArg){
     done.resolve(neededCertsArg);
     return done.promise;
 };
+
+let removeOldCerts = function(neededCertsArg){
+    let done = plugins.q.defer();
+    plugins.beautylog.log("now checking for obsolete certificates");
+    let regexCertTime = /-(.*).pem/;
+    let regexDomainName = /LE_CERTS\/(.*)\//
+    let obsoleteCerts = [];
+    plugins.gulp.src([
+        plugins.path.join(paths.certDir,"**/fullchain-*"),
+        "!" + plugins.path.join(paths.certDir,".git/**/*")
+    ])
+        .pipe(plugins.through2.obj(function(file,enc,cb){
+            let certGenerationTime:number = parseInt((regexCertTime.exec(file.relative))[1]);
+            let currentTime:number = plugins.moment(new Date()).seconds();
+            let certDomainName = (regexDomainName.exec(file.path))[1];
+            if (certGenerationTime + 7000000 < currentTime){
+                console.log(certDomainName + " is obsolete!");
+                obsoleteCerts.push(certDomainName);
+            } else {
+                console.log(certDomainName + " is still valid!");
+            }
+            cb(null,file);
+        },done.resolve));
+    return done.promise;
+}
 
 let getAvailableCerts = function(neededCertsArg:string[]){
     let done = plugins.q.defer();
@@ -115,9 +141,13 @@ let getMissingCerts = function(missingCertsArg:string[]){
 
 let pushCertsToOrigin = function(){
     let done = plugins.q.defer();
-    plugins.beautylog.log("now syncing certs back to source ");
+    plugins.beautylog.log("now commiting certificate changes");
     plugins.shelljs.exec(
-        "cd " + paths.certDir + " && git add -A && git commit -m 'UPDATE CERTS' && git push origin master"
+        "cd " + paths.certDir + " && git add -A && git commit -m 'UPDATE CERTS'"
+    );
+    plugins.beautylog.log("Now pushing certificate changes");
+    plugins.shelljs.exec(
+        "cd " + paths.certDir + " && git push origin master"
     );
     done.resolve();
     return done.promise;

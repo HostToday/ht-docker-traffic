@@ -29,7 +29,7 @@ RUN git clone https://github.com/lukas2511/letsencrypt.sh . \
 
 
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 4.3.1
+ENV NODE_VERSION 4.4.3
 
 # Install nvm with node and npm
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash \
@@ -43,7 +43,8 @@ COPY ./app-node/package.json /app-node/package.json
 COPY ./app-node/dist /app-node/dist
 
 WORKDIR /app-node
-RUN npm install --production
+RUN npm install -g npm \
+    && npm install --production
 
 COPY ./configssh /root/.ssh/config
 

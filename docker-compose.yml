@@ -1,13 +1,13 @@
 nginx1 :
   image: "nginx"
   environment:
-      VIRTUAL_HOST: "test11.labkomp.org"
+      VIRTUAL_HOST: "test100.labkomp.de"
   restart: always
   container_name: nginx1
 nginx2:
   image: nginx
   environment:
-    VIRTUAL_HOST: "test12.labkomp.org"
+    VIRTUAL_HOST: "test101.labkomp.de"
   restart: always
   container_name: nginx2
 traffic:
