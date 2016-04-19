@@ -1,5 +1,5 @@
 {
-  "name": "app-node",
+  "name": "coretraffic",
   "version": "1.0.0",
   "description": "app-node for ht-docker-traffic",
   "main": "dist/index.js",
@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "beautylog": "*",
+    "cflare": "0.0.0",
     "fs-extra": "^0.27.0",
     "gulp": "^3.9.1",
     "lodash": "^4.11.1",

@@ -1,5 +1,6 @@
 /// <reference path="./typings/main.d.ts" />
 export let beautylog = require("beautylog");
+export let childProcess = require("child_process");
 export let fs = require("fs-extra");
 export let gulp = require("gulp");
 export let lodash = require("lodash");

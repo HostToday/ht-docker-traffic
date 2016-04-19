@@ -1,0 +1,24 @@
+upstream {{containerDomainName}} {
+    server {{containerIp}};
+}
+
+server {
+    listen *:80 ;
+    server_name {{containerDomainName}};
+    rewrite        ^ https://{{containerDomainName}}$request_uri? permanent;
+}
+
+server {
+    listen *:443 ssl;
+    server_name {{containerDomainName}};
+    ssl_certificate /LE_CERTS/{{containerDomainName}}/fullchain.pem;
+    ssl_certificate_key /LE_CERTS/{{containerDomainName}}/privkey.pem;
+
+    location / {
+        proxy_pass http://{{containerDomainName}};
+        include /etc/nginx/proxy_params;
+    }
+    location ~ /\.git {
+        deny all;
+    }
+}

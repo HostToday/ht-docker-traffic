@@ -92,8 +92,9 @@ export let handleContainerChange = function(){
             let detailedContainerData = containerDataArg
                 .map(function(containerObject){
                     return {
-                        "containerId":containerObject.Id,
-                        "domain":plugins.smartstring.docker.makeEnvObject(containerObject.Config.Env).VIRTUAL_HOST
+                        "id":containerObject.Id,
+                        "domain":plugins.smartstring.docker.makeEnvObject(containerObject.Config.Env).VIRTUAL_HOST,
+                        "ip":containerObject.NetworkSettings.Networks.bridge.IPAddress
                     }
                 });
             let receivingContainersLocal = detailedContainerData.filter(function(containerObjectArg){
@@ -102,7 +103,7 @@ export let handleContainerChange = function(){
             receivingContainers = receivingContainersLocal;
             console.log(detailedContainerData);
             TrafficCerts.getCerts(receivingContainersLocal)
-                .then(TrafficNginx.getNginxConfig)
+                .then(function(){TrafficNginx.getNginxConfig(receivingContainersLocal)})
                 .then(done.resolve);
         });
     return done.promise;
