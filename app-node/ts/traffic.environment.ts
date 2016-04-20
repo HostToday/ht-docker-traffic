@@ -32,6 +32,18 @@ export let checkDebug = function(){
     return done.promise;
 };
 
+export let checkDockersock = function(){
+    try {
+        plugins.smartfile.checks.fileExistsSync("/var/run/docker.sock");
+        plugins.beautylog.log("great, docker.sock is available!");
+        return true;
+    }
+    catch(err){
+        plugins.beautylog.warn("docker.sock is unavailable.");
+        return false;
+    }
+};
+
 export let checkSshKeySync = function(){
     if(process.env.CERT_ORIGIN_SSH){
         return true
