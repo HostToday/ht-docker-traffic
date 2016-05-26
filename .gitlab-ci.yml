@@ -1,4 +1,6 @@
-image: gitlab/dind:latest
+image: docker:git
+services:
+- docker:dind
 
 stages:
 - test
