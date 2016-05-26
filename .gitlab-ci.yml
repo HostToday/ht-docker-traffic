@@ -1,6 +1,7 @@
 image: gitlab/dind:latest
 
 stages:
+- test
 - release
 
 variables:
@@ -10,7 +11,17 @@ variables:
 before_script:
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
 
-build:
+test:
+  stage: test
+  script:
+    - docker version
+    - docker build -t $CONTAINER_TEST_IMAGE .
+  only:
+    - master
+  tags:
+    - dockerbuild
+
+release:
   stage: release
   script:
     - docker version
