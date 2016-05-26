@@ -4,8 +4,8 @@ stages:
 - release
 
 variables:
-  CONTAINER_TEST_IMAGE: registry.gitlab.com/HostToday/ht-docker-traffic:$CI_BUILD_REF_NAME
-  CONTAINER_RELEASE_IMAGE: registry.gitlab.com/HostToday/ht-docker-traffic:latest
+  CONTAINER_TEST_IMAGE: registry.gitlab.com/hosttoday/ht-docker-traffic:$CI_BUILD_REF_NAME
+  CONTAINER_RELEASE_IMAGE: registry.gitlab.com/hosttoday/ht-docker-traffic:latest
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
