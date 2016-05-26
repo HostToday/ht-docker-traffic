@@ -1,4 +1,4 @@
-image: docker:dind
+image: gitlab/dind:latest
 
 stages:
 - release
