@@ -1,8 +1,10 @@
-image: gitlab/dind
+image: docker:git
+services:
+  - docker:dind
 
 stages:
-- test
-- release
+  - test
+  - release
 
 variables:
   CONTAINER_TEST_IMAGE: registry.gitlab.com/hosttoday/ht-docker-traffic:$CI_BUILD_REF_NAME
