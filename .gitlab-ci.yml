@@ -21,7 +21,7 @@ test:
   only:
     - master
   tags:
-    - dockerbuild
+    - lossless
 
 release:
   stage: release
@@ -32,4 +32,4 @@ release:
   only:
     - master
   tags:
-    - dockerbuild
+    - lossless
