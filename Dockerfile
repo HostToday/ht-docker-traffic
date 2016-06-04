@@ -1,4 +1,4 @@
-FROM hosttoday/ht-docker-node-python3:latest
+FROM hosttoday/ht-docker-node:python3
 RUN DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && apt-get install -y -q --no-install-recommends \
