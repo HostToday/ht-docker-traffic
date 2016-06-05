@@ -16,8 +16,7 @@ before_script:
 test:
   stage: test
   script:
-    - docker version
-    - docker build -t $CONTAINER_TEST_IMAGE .
+    - npmci build docker
   only:
     - master
   tags:
@@ -27,8 +26,6 @@ release:
   stage: release
   script:
     - docker version
-    - docker build -t $CONTAINER_RELEASE_IMAGE .
-    - docker push $CONTAINER_RELEASE_IMAGE
   only:
     - master
   tags:
