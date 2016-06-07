@@ -3,20 +3,26 @@ services:
   - docker:dind
 
 stages:
+  - build
   - test
   - release
 
-variables:
-  CONTAINER_TEST_IMAGE: registry.gitlab.com/hosttoday/ht-docker-traffic:test
-  CONTAINER_RELEASE_IMAGE: registry.gitlab.com/hosttoday/ht-docker-traffic:latest
-
 before_script:
-  - npmci prepare docker-gitlab
+  - npmci prepare docker
 
+build:
+  stage: build
+  script:
+    - npmci build docker
+  only:
+    - master
+  tags:
+    - lossless
+    
 test:
   stage: test
   script:
-    - npmci build docker
+    - npmci test docker
   only:
     - master
   tags:
@@ -25,7 +31,7 @@ test:
 release:
   stage: release
   script:
-    - docker version
+    - npmci publish docker
   only:
     - master
   tags:
