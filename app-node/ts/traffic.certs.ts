@@ -19,9 +19,13 @@ export let missingCerts = []; //all certs that are currently missing
 let setupCertsFromOrigin = function(){
     let done = plugins.q.defer();
     plugins.beautylog.log("now getting certificates from certificate origin");
-    plugins.shelljs.exec(
-        "cd " + paths.certDir + " && git init && git remote add origin " + process.env.CERT_ORIGIN
-    );
+    if(TrafficOptions.certOrigin && TrafficOptions.sshKey){
+        plugins.shelljs.exec(
+            "cd " + paths.certDir + " && git init && git remote add origin " + process.env.CERT_ORIGIN
+        );
+    } else {
+        plugins.beautylog.error("Either certOrigin or SSHKey is missing!");
+    }
     done.resolve();
     return done.promise;
 };
@@ -82,7 +86,9 @@ let getNeededCerts = function(receivingContainersArrayArg:any[]){
 
 let getCertsFromOrigin = function(neededCertsArg){
     let done = plugins.q.defer();
-    plugins.shelljs.exec("cd " + paths.certDir + " && git pull origin master");
+    if(TrafficOptions.certOrigin && TrafficOptions.sshKey){
+        plugins.shelljs.exec("cd " + paths.certDir + " && git pull origin master");
+    }
     done.resolve(neededCertsArg);
     return done.promise;
 };
@@ -142,13 +148,15 @@ let getMissingCerts = function(missingCertsArg:string[]){
 let pushCertsToOrigin = function(){
     let done = plugins.q.defer();
     plugins.beautylog.log("now commiting certificate changes");
-    plugins.shelljs.exec(
-        "cd " + paths.certDir + " && git add -A && git commit -m 'UPDATE CERTS'"
-    );
-    plugins.beautylog.log("Now pushing certificate changes");
-    plugins.shelljs.exec(
-        "cd " + paths.certDir + " && git push origin master"
-    );
+    if(TrafficOptions.certOrigin && TrafficOptions.sshKey){
+        plugins.shelljs.exec(
+            "cd " + paths.certDir + " && git add -A && git commit -m 'UPDATE CERTS'"
+        );
+        plugins.beautylog.log("Now pushing certificate changes");
+        plugins.shelljs.exec(
+            "cd " + paths.certDir + " && git push origin master"
+        );
+    }
     done.resolve();
     return done.promise;
 };
