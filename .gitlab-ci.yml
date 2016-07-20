@@ -14,8 +14,6 @@ build:
   stage: build
   script:
     - npmci build docker
-  only:
-    - master
   tags:
     - lossless
     - priv
@@ -24,8 +22,6 @@ test:
   stage: test
   script:
     - npmci test docker
-  only:
-    - master
   tags:
     - lossless
     - priv
