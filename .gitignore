@@ -1,8 +1,4 @@
-.idea/
-app-node/ts/typings/
-app-node/ts/*.js
-app-node/ts/*.js.map
-app-node/node_modules/
-app-node/docs/
-app-node/coverage/
-nogit/
+node_modules/
+docs/
+coverage/
+.nogit/

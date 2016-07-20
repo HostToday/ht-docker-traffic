@@ -1,5 +1,0 @@
-/// <reference path="../ts/typings/main.d.ts" />
-var appNode = require("../dist/index.js");
-appNode.noTicker();
-
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInRlc3QudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsZ0RBQWdEO0FBQ2hELElBQUksT0FBTyxHQUFHLE9BQU8sQ0FBQyxrQkFBa0IsQ0FBQyxDQUFDO0FBQzFDLE9BQU8sQ0FBQyxRQUFRLEVBQUUsQ0FBQyIsImZpbGUiOiJ0ZXN0LmpzIiwic291cmNlc0NvbnRlbnQiOlsiLy8vIDxyZWZlcmVuY2UgcGF0aD1cIi4uL3RzL3R5cGluZ3MvbWFpbi5kLnRzXCIgLz5cbmxldCBhcHBOb2RlID0gcmVxdWlyZShcIi4uL2Rpc3QvaW5kZXguanNcIik7XG5hcHBOb2RlLm5vVGlja2VyKCk7Il0sInNvdXJjZVJvb3QiOiIvc291cmNlLyJ9
