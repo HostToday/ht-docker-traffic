@@ -1,7 +1,7 @@
 {
   "name": "ht-docker-coretraffic",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "app-node for ht-docker-traffic",
   "main": "dist/index.js",
   "scripts": {
