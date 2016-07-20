@@ -32,10 +32,11 @@ test:
 
 release:
   stage: release
+  environment: docker-io_registry
   script:
     - npmci publish docker
   only:
-    - master
+    - tags
   tags:
     - lossless
     - priv
